@@ -9,7 +9,9 @@ Requirements:
 
 ---
 ##### Run all with one command
-`npm i && npm run dev && lando start && lando composer install`
+```bash
+npm i && npm run dev && lando start && lando composer install
+```
 
 
 ##### Done!
