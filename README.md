@@ -131,6 +131,7 @@ used to define background-image[-color,-repeat,-size,-position,-attachment] (pas
 	```scss
 	@include bg(cover, 'my-image.png', no-repeat, 50% 50%, #ddd, fixed);
 	```
+	Note: in case you want to set background size as number(like: 20px 10px), you'll need to list it after background position
 
 ### Absolute cover
 ```scss
