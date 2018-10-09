@@ -14,4 +14,5 @@ Requirements:
 
 ##### Done!
 now your app is at: `http://[project name].lndo.site`
+
 phpMyAdmin is at: `http://pma.[project name].lndo.site`
