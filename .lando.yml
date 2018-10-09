@@ -1,0 +1,12 @@
+name: pp
+recipe: wordpress
+config:
+  webroot: public
+  php: '7.2'
+proxy:
+  phpmyadmin:
+  - pma.pp.lndo.site
+
+services:
+  phpmyadmin:
+    type: phpmyadmin

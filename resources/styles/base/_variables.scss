@@ -1,0 +1,33 @@
+// Colors
+$c-red : red;
+$c-black : #040404;
+$c-close-black : #252525;
+$c-almost-black: #2f3030;
+$c-darker : #3e3e3e;
+$c-dark : #3d3c3c;
+$c-white : #fff;
+$c-milk : #f9f5ef;
+$c-blue : #235e96;
+$c-dark-blue : #3c5a77;
+$c-green : #a5b941;
+$c-dark-gray : #616161;
+$c-gray : #59595a;
+$c-gray-text : #494a4a;
+$c-grayish : #898989;
+$c-light-gray : #8d97ad;
+$c-lightest-gray: #ebebeb;
+$c-gray-footer: #f2f2f2;
+
+
+$c-main : $c-black;
+///////// Vendors Settings /////////
+
+// Bootstrap Options
+$enable-rounded : false;
+$primary : $c-black;
+$secondary : $c-white;
+$border-color : $c-black;
+$hr-border-color : $c-black;
+
+// Fontawesome Options
+$fa-font-path : '../fonts/font-awesome'

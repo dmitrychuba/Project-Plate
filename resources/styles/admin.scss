@@ -1,0 +1,28 @@
+.acf-fields {
+    .acf-relationship .list .acf-rel-item {
+        &:after {
+            clear   : both;
+            content : "";
+            display : table;
+        }
+        .thumbnail {
+            $size : 30px;
+            width  : $size;
+            height : $size;
+            margin : 3px 5px 0 0;
+
+            > img {
+                max-width  : $size;
+                max-height : $size;
+            }
+        }
+    }
+
+    .acf-relationship .list ul .acf-rel-item {
+        padding-left : 7px;
+    }
+
+    .acf-relationship .list {
+        height : 210px;
+    }
+}

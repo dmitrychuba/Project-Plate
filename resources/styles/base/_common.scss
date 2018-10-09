@@ -1,0 +1,36 @@
+.clear, .cf, .clearfix {
+    clear : both;
+}
+
+.cf-after, .clearfix-after, .clear-after {
+    &:after {
+        content : "";
+        display : table;
+        clear   : both;
+    }
+}
+
+img.aligncenter {
+    float   : none;
+    margin  : 0 auto 5px;
+    display : block;
+}
+
+img.alignleft {
+    float  : left;
+    margin : 0 20px 5px 0;
+}
+
+img.alignright {
+    float  : right;
+    margin : 0 0 5px 20px;
+}
+
+#contentContainer {
+    padding-bottom : 70px;
+}
+
+.sr-only,
+.screen-reader-text {
+    display : none;
+}

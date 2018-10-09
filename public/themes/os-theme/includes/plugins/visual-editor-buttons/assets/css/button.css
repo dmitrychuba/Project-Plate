@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family : 'FontAwesome';
+    src         : url("../fonts/font-awesome/fontawesome-webfont.eot?v=4.7.0");
+    src         : url("../fonts/font-awesome/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), url("../fonts/font-awesome/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), url("../fonts/font-awesome/fontawesome-webfont.woff?v=4.7.0") format("woff"), url("../fonts/font-awesome/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), url("../fonts/font-awesome/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
+    font-weight : normal;
+    font-style  : normal;
+}
+
+.fa, .button-style:after {
+    display                 : inline-block;
+    font                    : normal normal normal 14px/1 FontAwesome;
+    font-size               : inherit;
+    text-rendering          : auto;
+    -webkit-font-smoothing  : antialiased;
+    -moz-osx-font-smoothing : grayscale;
+}
+
+.fa-arrow-circle-o-right:before {
+    content : "\F18E";
+}
+
+.button-style,
+.mce-content-body a[data-mce-selected] {
+    color            : #fff;
+    display          : inline-block;
+    padding          : 10px 35px;
+    text-decoration  : none;
+    background-color : #900;
+}
+
+.button-style:hover {
+    background-color : maroon;
+}
+
+.button-style:after {
+    width          : 26px;
+    height         : 26px;
+    content        : "\F18E";
+    display        : inline-block;
+    margin-left    : 15px;
+    vertical-align : sub;
+    font-size      : 1.75rem;
+}
+
+.button-style:hover:after {
+    -webkit-animation : swing .8s ease-in-out infinite;
+    animation         : swing .8s ease-in-out infinite;
+}

@@ -1,0 +1,31 @@
+// Thin 100
+// Extra-Light 200
+// Light 300
+// Normal 400
+// Medium 500
+// Semi-Bold 600
+// Bold 700
+// Extra-Bold 800
+// Ultra-Bold 900
+
+$include-fonts : true !default;
+
+//$f-nexa-bold : 'Nexa-Bold';
+//$f-nexa-light : 'Nexa-Light';
+
+$fonts-list : (
+        //$f-nexa-bold,
+        //$f-nexa-light
+);
+
+$fw-light : 300;
+$fw-regular : 400;
+$fw-semibold : 600;
+$fw-bold : 700;
+$fw-heavy : 900;
+
+@if ($include-fonts) {
+    @each $font in $fonts-list {
+        @include custom-font($font);
+    }
+}

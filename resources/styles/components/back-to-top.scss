@@ -1,0 +1,29 @@
+.back-to-top {
+
+    width            : 45px;
+    right            : 30px;
+    height           : 45px;
+    bottom           : 30px;
+    cursor           : pointer;
+    z-index          : 100;
+    opacity          : 0;
+    position         : fixed;
+    transition       : transform .3s;
+    text-align       : center;
+    visibility       : hidden;
+    border-radius    : 50%;
+    //background-color : rgba($c-blue, .8);
+
+    @include f('24px/38px', $c-white);
+    @include submenu-hidden;
+
+    &:hover {
+        transform : scale3d(1.1, 1.1, 1.1);
+    }
+}
+
+.scroll {
+    .back-to-top {
+        @include submenu-visible;
+    }
+}

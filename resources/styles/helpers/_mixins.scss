@@ -1,0 +1,274 @@
+@mixin fade-out {
+    opacity    : 0;
+    visibility : hidden;
+    transition : opacity .5s ease, visibility 0s linear .5s;
+}
+
+@mixin fade-in {
+    opacity    : 1;
+    transition : opacity .3s ease, visibility 0s;
+    visibility : visible;
+}
+
+@mixin submenu-hidden {
+    @include fade-out;
+    transform  : translateY(-20px);
+    transition : transform .5s, opacity .5s ease, visibility 0s linear .5s;
+}
+
+@mixin submenu-visible {
+    @include fade-in;
+    transform  : translateY(0);
+    transition : transform .5s, opacity .3s ease, visibility 0s;
+}
+
+@mixin abs-cover {
+    top      : 0;
+    left     : 0;
+    width    : 100%;
+    height   : 100%;
+    position : absolute;
+}
+
+@mixin close($size: 25px, $color: #ccc, $hover-color: #000, $thickness: 2px ) {
+    width    : $size;
+    height   : $size;
+    cursor   : pointer;
+    position : absolute;
+
+    &:after, &:before {
+        top              : 50%;
+        left             : 0;
+        width            : 100%;
+        height           : $thickness;
+        content          : '';
+        position         : absolute;
+        transform        : translateY(-50%);
+        transition       : background-color .3s;
+        border-radius    : 15%;
+        background-color : $color;
+    }
+    &:after {
+        transform : translateY(-50%) rotate(-45deg);
+    }
+    &:before {
+        transform : translateY(-50%) rotate(45deg);
+    }
+
+    &:hover {
+        // background-color : $hover-color;
+        &:after, &:before {
+            background-color : $hover-color;
+        }
+    }
+
+}
+
+@mixin input-placeholder {
+    &.placeholder {
+        @content;
+    }
+    &:-moz-placeholder {
+        @content;
+    }
+    &::-moz-placeholder {
+        @content;
+    }
+    &:-ms-input-placeholder {
+        @content;
+    }
+    &::-webkit-input-placeholder {
+        @content;
+    }
+}
+
+%y-align {
+    top       : 50%;
+    position  : absolute;
+    transform : translateY(-50%);
+}
+
+%x-align {
+    left      : 50%;
+    position  : absolute;
+    transform : translateX(-50%);
+}
+
+%xy-align {
+    top       : 50%;
+    left      : 50%;
+    position  : absolute;
+    transform : translateX(-50%) translateY(-50%);
+}
+
+%abs-cover {
+    @include abs-cover;
+}
+
+// =============================================================================
+// Font Face
+// =============================================================================
+
+@mixin font-face($name, $path, $exts: eot woff2 woff ttf svg, $weight: null, $style: null) {
+    $src : null;
+    $extmods : (
+            eot: "?",
+            svg: "#" + str-replace($name, " ", "_")
+    );
+    $formats : (
+            otf: "opentype",
+            ttf: "truetype"
+    );
+
+    @each $ext in $exts {
+        $extmod : if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+        $format : if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+        $src : append($src, font-url(quote($path + "." + $extmod)) format(quote($format)), comma);
+    }
+
+    @font-face {
+        font-family : quote($name);
+        font-style  : $style;
+        font-weight : $weight;
+        src         : $src;
+    }
+}
+
+@mixin custom-font($font-name) {
+    @include font-face($font-name, $font-name+'/'+$font-name, woff woff2 ttf svg eot);
+    //@include font-face($font-name, font-files($font-name+'/'+$font-name+'.woff', $font-name+'/'+$font-name+'.ttf', $font-name+'/'+$font-name+'.svg'), $font-name+'/'+$font-name+'.eot');
+}
+
+@mixin custom-font-v1($font-name, $file-name: false, $weight: false) {
+    @if ($file-name == false) {
+        $file-name : $font-name;
+    }
+    @include font-face($font-name, font-files($file-name+'/'+$file-name+'.woff', $file-name+'/'+$file-name+'.ttf', $file-name+'/'+$file-name+'.svg'), $file-name+'/'+$file-name+'.eot', $weight);
+}
+
+@mixin bg($params...) {
+    $svg : false;
+    $is-svg : false;
+    $svg-url : false;
+    $is-image : false;
+    $is-retina : false;
+    $image-url : false;
+    $retina-url : false;
+    $is-gradient : false;
+    $is-background-size : false;
+    $is-background-position : false;
+    $background-attachment : scroll, fixed, local;
+    $background-color : transparent;
+    $background-image : none;
+    $background-size : cover contain auto;
+    $background-position : left, right, top, bottom, center;
+    $background-repeat : repeat, repeat-x, repeat-y, no-repeat;
+
+    @each $param in $params {
+        @if (index($background-attachment, $param)) {
+            background-attachment : $param;
+        }
+        @if ($is-background-position == false and (index($background-position, $param) or type-of($param)=='list')) {
+            background-position : $param;
+            $is-background-position : true;
+        } @else if ($is-background-size == false and (index($background-size, $param) or type-of($param)=='list')) {
+            background-size     : $param;
+            $is-background-size : true;
+        }
+        @if (index($background-repeat, $param)) {
+            background-repeat : $param;
+        }
+        @if (index($background-image, $param) or (type-of($param)=='string' and str-index(to-lower-case($param), '.'))) {
+            $is-image : $param;
+            @if (type-of($param)=='string' and str-index(to-lower-case($param), 'http://')) {
+                background-image : url($param);
+            } @else {
+                background-image : image-url($param);
+                $image-url : $param;
+            }
+        }
+        @if (type-of($param)=='color') {
+            background-color : $param;
+        }
+        @if ($param=='dim' or $param=='dimensions') {
+            $is-dimensions : true;
+        }
+        @if ($param=='ret' or $param=='retina') {
+            $is-retina : true;
+        }
+        @if ($param=='svg') {
+            $is-svg : true;
+        }
+
+        $list : str-explode(type-of($param), '::');
+
+        @if (type-of($list)=='list') {
+            @each $list-item in $list {
+                @if (type-of($list-item)=='string' and str-index(to-lower-case($list-item), 'gradient')) {
+                    $is-gradient : $param;
+                }
+            }
+        }
+    }
+
+    @if ($is-gradient != false) {
+        @include background-image($is-gradient);
+    }
+
+    @if ($image-url != false and ($is-retina != false or $is-svg != false)) {
+
+        // Get Retina and SVG URLs
+        $position : -1;
+        $strpath : '#{$image-url}';
+        $length : str-length($strpath);
+
+        @for $i from $length through $length - 10 {
+            @if ($position == -1) {
+                $char : str-slice($strpath, $i, $i);
+                @if str-index($char, ".") == 1 {
+                    $position : $i;
+                }
+            }
+        }
+
+        @if ($position != -1) {
+            $ext : str-slice($strpath, $position + 1, $length);
+            $base : str-slice($strpath, 1, $position - 1);
+
+            @if ($is-retina != false) {
+                $retina-url : image-url("#{$base}@2x.#{$ext}");
+            }
+
+            @if ($is-svg != false) {
+                $svg-url : image-url("#{$base}.svg");
+            }
+        }
+    }
+
+    @if ($svg-url != false) {
+        background-image : $svg-url;
+    }
+
+    @if ($retina-url != false) {
+
+        @media all and (-webkit-min-device-pixel-ratio : 1.5),
+        all and (-o-min-device-pixel-ratio : 3/2),
+        all and (min--moz-device-pixel-ratio : 1.5),
+        all and (min-device-pixel-ratio : 1.5) {
+            background-image : $retina-url;
+            @if ($svg-url != false) {
+                background-image : $svg-url;
+            }
+
+        }
+
+        @media (-webkit-min-device-pixel-ratio : 2),
+        (min-resolution : 2 * 96dpi) {
+            background-image : $retina-url;
+            @if ($svg-url != false) {
+                background-image : $svg-url;
+            }
+        }
+    }
+
+}

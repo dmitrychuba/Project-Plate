@@ -1,0 +1,9 @@
+languages
+mu-plugins
+!mu-plugins/advanced-custom-fields-pro
+plugins/*
+!plugins/index.php
+upgrade
+uploads
+wordpress
+themes/os-theme/assets
