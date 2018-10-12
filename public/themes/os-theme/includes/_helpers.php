@@ -75,7 +75,7 @@ if ( ! function_exists( '_get_views' ) ) {
 
 if ( ! function_exists( 'the_asset' ) ) {
 	function the_asset( $asset = null ) {
-		asset_url( $asset,  true);
+		asset_url( $asset, true );
 	}
 }
 
@@ -159,6 +159,12 @@ if ( ! function_exists( 'get_the_link' ) ) {
 		}
 
 		$attrs_def = array_merge( $attrs_def, $attrs );
+
+		if ( ! empty( $attrs_def['text'] ) ) {
+			$link_array['title'] = $attrs_def['text'];
+			unset( $attrs_def['text'] );
+		}
+
 		$attrs_str = '';
 		foreach ( $attrs_def as $attr => $val ) {
 			$attrs_str .= ' ' . $attr . '="' . $val . '"';
