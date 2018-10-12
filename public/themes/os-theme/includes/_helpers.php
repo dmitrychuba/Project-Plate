@@ -113,6 +113,87 @@ if ( ! function_exists( 'get_array' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_image_url' ) ) {
+	function get_image_url( $image_array, $size = 'medium_large' ) {
+		$image_url = null;
+		if ( ! empty( $image_array['sizes'] ) && ! empty( $image_array['sizes'][ $size ] ) ) {
+			$image_url = $image_array['sizes'][ $size ];
+		} else if ( $image_array['url'] ) {
+			$image_url = $image_array['url'];
+		}
+
+		return $image_url;
+	}
+}
+
+if ( ! function_exists( 'get_image' ) ) {
+	function get_image( $image_id_array, $size = 'medium_large', $attrs = [] ) {
+
+		if ( is_array( $image_id_array ) && ! empty( $image_id_array['ID'] ) ) {
+			$attachment_id = $image_id_array['ID'];
+		} elseif ( is_numeric( $image_id_array ) ) {
+			$attachment_id = $image_id_array;
+		} else {
+			return null;
+		}
+
+		return wp_get_attachment_image( $attachment_id, $size, false, $attrs );
+	}
+}
+
+if ( ! function_exists( 'the_image' ) ) {
+	function the_image( $image_array, $size = 'medium_large', $attrs = [] ) {
+		echo get_image( $image_array, $size, $attrs );
+	}
+
+}
+
+if ( ! function_exists( 'get_the_link' ) ) {
+	function get_the_link( $link_array, $attrs = [] ) {
+		if ( empty( $link_array['url'] ) ) {
+			return null;
+		}
+		$attrs_def = [];
+		if ( ! empty( $link_array['target'] ) ) {
+			$attrs_def['target'] = $link_array['target'];
+		}
+
+		$attrs_def = array_merge( $attrs_def, $attrs );
+		$attrs_str = '';
+		foreach ( $attrs_def as $attr => $val ) {
+			$attrs_str .= ' ' . $attr . '="' . $val . '"';
+		}
+
+		$html = '<a href="' . $link_array['url'] . '"' . $attrs_str . '>';
+		if ( ! empty( $link_array['title'] ) ) {
+			$html .= $link_array['title'];
+		} else {
+			$html .= $link_array['url'];
+		}
+		$html .= '</a>';
+
+		return $html;
+	}
+}
+
+if ( ! function_exists( 'the_link' ) ) {
+	function the_link( $link_array, $attrs = [] ) {
+		echo get_the_link( $link_array, $attrs );
+	}
+}
+
+if ( ! function_exists( 'get_the_text' ) ) {
+	function get_the_text( $text, $bt = true ) {
+		return $bt ? nl2br( $text ) : $text;
+	}
+}
+
+if ( ! function_exists( 'the_text' ) ) {
+	function the_text( $text ) {
+		echo get_the_text( $text );
+	}
+}
+
 if ( ! function_exists( 'truncate' ) ) {
 	function truncate( $text, $chars = 25 ) {
 		if ( strlen( $text ) <= $chars ) {
