@@ -127,7 +127,7 @@ if ( ! function_exists( 'get_image_url' ) ) {
 }
 
 if ( ! function_exists( 'get_image' ) ) {
-	function get_image( $image_id_array, $size = 'medium_large', $attrs = [] ) {
+	function get_image( $image_id_array, $attrs = [], $size = '' ) {
 
 		if ( is_array( $image_id_array ) && ! empty( $image_id_array['ID'] ) ) {
 			$attachment_id = $image_id_array['ID'];
@@ -142,37 +142,50 @@ if ( ! function_exists( 'get_image' ) ) {
 }
 
 if ( ! function_exists( 'the_image' ) ) {
-	function the_image( $image_array, $size = 'medium_large', $attrs = [] ) {
-		echo get_image( $image_array, $size, $attrs );
+	function the_image( $image_array, $attrs = [], $size = '' ) {
+		echo get_image( $image_array , $attrs, $size );
 	}
 
 }
 
-if ( ! function_exists( 'get_the_link' ) ) {
-	function get_the_link( $link_array, $attrs = [] ) {
-		if ( empty( $link_array['url'] ) ) {
-			return null;
-		}
+if ( ! function_exists( 'get_link_attrs' ) ) {
+	function get_link_attrs( $link_array, $attrs = [] ) {
 		$attrs_def = [];
+
+		if ( ! empty( $link_array['url'] ) ) {
+			$attrs_def['href'] = $link_array['url'];
+			unset( $link_array['url'] );
+		}
+
 		if ( ! empty( $link_array['target'] ) ) {
 			$attrs_def['target'] = $link_array['target'];
 		}
 
 		$attrs_def = array_merge( $attrs_def, $attrs );
 
-		if ( ! empty( $attrs_def['text'] ) ) {
-			$link_array['title'] = $attrs_def['text'];
-			unset( $attrs_def['text'] );
-		}
-
 		$attrs_str = '';
 		foreach ( $attrs_def as $attr => $val ) {
 			$attrs_str .= ' ' . $attr . '="' . $val . '"';
 		}
 
-		$html = '<a href="' . $link_array['url'] . '"' . $attrs_str . '>';
-		if ( ! empty( $link_array['title'] ) ) {
-			$html .= $link_array['title'];
+		return ! empty( $attrs_str ) ? $attrs_str : null;
+	}
+}
+
+if ( ! function_exists( 'get_the_link' ) ) {
+	function get_the_link( $link_array, $attrs = [] ) {
+		if ( ! empty( $attrs['text'] ) ) {
+			$link_title = $attrs['text'];
+			unset( $attrs['text'] );
+		}
+
+		if ( empty( $link_array['url'] ) && empty( $link_title ) ) {
+			return null;
+		}
+
+		$html = '<a' . get_link_attrs( $link_array, $attrs ) . '>';
+		if ( ! empty( $link_title ) ) {
+			$html .= $link_title;
 		} else {
 			$html .= $link_array['url'];
 		}
