@@ -113,6 +113,26 @@ if ( ! function_exists( 'get_array' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_repeater_row' ) ) {
+	function get_repeater_row( $data, $key = null ) {
+		$result = [];
+		if ( is_array( $data ) && ! empty( $data[0] ) ) {
+			$result = $data[0];
+			if ( $key && ! empty( $result[ $key ] ) ) {
+				$result = $result[ $key ];
+			}
+		}
+
+		return $result;
+	}
+}
+
+if ( ! function_exists( 'the_repeater_row' ) ) {
+	function the_repeater_row( $data, $key = null ) {
+		echo get_repeater_row( $data, $key );
+	}
+}
+
 if ( ! function_exists( 'get_image_url' ) ) {
 	function get_image_url( $image_array, $size = 'medium_large' ) {
 		$image_url = null;
