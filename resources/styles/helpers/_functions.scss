@@ -423,12 +423,18 @@ $max-breakpoint : 1400;
     $color : false;
     $name : false;
 
+    $weights : (normal,ligher,bold,bolder);
+
     @each $param in $params {
 
         @if ($param != false) {
             @if (type-of($param)=='color') {
                 $color : $param;
-            } @else if (type-of($param) == 'number' and (type-of($param)!='string' and not index('px' 'em' 'rem' 'pt' '%', unit($param)))) {
+            } @else if (
+                    (type-of($param) == 'number' and (type-of($param)!='string' and not index('px' 'em' 'rem' 'pt' '%', unit($param))))
+                    or
+                    (index($weights, $param))
+            ) {
                 $weight : $param;
             } @else if (type-of($param) == 'number' or (type-of($param)=='string' and str-index($param, '/')) or (type-of($param) == 'number' and index('px' 'em' 'rem' 'pt' '%', unit($param)))) {
                 $size : $param;
@@ -448,7 +454,7 @@ $max-breakpoint : 1400;
         $size : str-replace("#{$size}", 'em', '');
         $size : str-replace("#{$size}", 'rem', '');
         $size : str-replace("#{$size}", 'pt', '');
-        //$size : str-replace("#{$size}", '%', '');
+        $size : str-replace("#{$size}", '%', '');
 
         $size : "#{$size}";
 
@@ -463,13 +469,9 @@ $max-breakpoint : 1400;
             $font-size : $size;
         }
 
+        $font-size : to-number(unquote("#{$font-size}px"));
 
-        @if (str-index($font-size, '%') == null) {
-            $font-size : to-number(unquote("#{$font-size}px"));
-            font-size : rem-calc($font-size);
-        } @else {
-            font-size : unquote($font-size);
-        }
+        font-size : rem-calc($font-size);
 
         @if ($line-height != false) {
             line-height : rem-calc($line-height);
