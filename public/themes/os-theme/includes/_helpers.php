@@ -143,7 +143,7 @@ if ( ! function_exists( 'get_image' ) ) {
 
 if ( ! function_exists( 'the_image' ) ) {
 	function the_image( $image_array, $attrs = [], $size = '' ) {
-		echo get_image( $image_array , $attrs, $size );
+		echo get_image( $image_array, $attrs, $size );
 	}
 
 }
@@ -177,6 +177,9 @@ if ( ! function_exists( 'get_the_link' ) ) {
 		if ( ! empty( $attrs['text'] ) ) {
 			$link_title = $attrs['text'];
 			unset( $attrs['text'] );
+		} else if ( ! empty( $link_array['title'] ) ) {
+			$link_title = $link_array['title'];
+			unset( $link_array['title'] );
 		}
 
 		if ( empty( $link_array['url'] ) && empty( $link_title ) ) {
