@@ -1,5 +1,5 @@
 languages
-mu-plugins
+mu-plugins/*
 !mu-plugins/advanced-custom-fields-pro
 plugins/*
 !plugins/index.php
