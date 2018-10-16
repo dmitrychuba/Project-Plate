@@ -58,7 +58,11 @@ class WP_Posts {
 	 *
 	 * @return array
 	 */
-	public function postCategories( $post ) {
+	public function postCategories( $post = null ) {
+		if ( empty( $post ) ) {
+			$post = get_post();
+		}
+
 		$categories = [];
 		if ( ! empty( $post->ID ) ) {
 			$categories = get_the_category( $post->ID );
@@ -148,6 +152,57 @@ class WP_Posts {
 		}
 
 		return $this->getPosts( $args );
+	}
+
+	/**
+	 * @param int  $limit
+	 * @param null $post
+	 *
+	 * @return array
+	 */
+	public function related( $limit = 3, $post = null ) {
+		if ( empty( $post ) ) {
+			$post = get_post();
+		}
+
+		$post_categories             = $this->postCategories( $post );
+		$post_categories_index_count = [];
+		foreach ( $post_categories as $post_category ) {
+			if ( $post_category->count > 1 ) {
+				$post_categories_index_count[ $post_category->count ] = $post_category->slug;
+			}
+		}
+		// TODO:
+		// Work on prioritizing by categories weights(post counts)
+		// $cats = [];
+		// for ( $i = 0; $i < $limit; $i ++ ) {
+		//	$cats[] = weighted_rand( $post_categories_index_count );
+		// }
+
+		$cats = $post_categories_index_count;
+
+		$posts = $this->getPosts( [
+			'orderby'        => 'rand',
+			'post__not_in'   => [ $post->ID ],
+			'category_name'  => implode( ',', $cats ),
+			'posts_per_page' => $limit,
+		] );
+
+		if ( count( $posts ) < $limit ) {
+			$excluded_ids = [ $post->ID ];
+			foreach ( $posts as $_post ) {
+				$excluded_ids[] = $_post->ID;
+			}
+			$posts_add = $this->getPosts( [
+				'orderby'        => 'rand',
+				'post__not_in'   => $excluded_ids,
+				'posts_per_page' => $limit - count( $posts ),
+			] );
+
+			$posts = array_merge( $posts, $posts_add );
+		}
+
+		return $posts;
 	}
 
 	/**

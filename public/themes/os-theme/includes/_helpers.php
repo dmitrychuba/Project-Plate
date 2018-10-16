@@ -73,6 +73,34 @@ if ( ! function_exists( '_get_views' ) ) {
 	}
 }
 
+if ( ! function_exists( 'weighted_rand' ) ) {
+	/**
+	 * This function expects an array with weights
+	 * as its array indices. You should not use a
+	 * simple array — e.g. array('a', 'b', 'c'). Since
+	 * the first item in an array like this has index 0,
+	 * it will never be selected.
+	 *
+	 * It will return a randomly selected value.
+	 *
+	 * @param $data
+	 *
+	 * @return mixed
+	 */
+	function weighted_rand( $data ) {
+		$total_weight = array_sum( array_keys( $data ) );
+		$rand   = rand( 1, $total_weight );
+
+		$current_weight = 0;
+		foreach ( $data as $i => $val ) {
+			$current_weight += $i;
+			if ( $current_weight >= $rand ) return $val;
+		}
+
+		return end( $data );
+	}
+}
+
 if ( ! function_exists( 'the_asset' ) ) {
 	function the_asset( $asset = null ) {
 		asset_url( $asset, true );
