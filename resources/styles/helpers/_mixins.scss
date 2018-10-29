@@ -105,6 +105,23 @@
     @include abs-cover;
 }
 
+
+@mixin grayscale($value: 100%) {
+    -webkit-filter: #{"grayscale(#{$value})"};
+    -moz-filter: #{"grayscale(#{$value})"};
+    filter:#{"grayscale(#{$value})"};
+}
+
+.grayscale {
+    transition: all 200ms ease-in-out;
+    @include grayscale(100%);
+    &:hover {
+        @include grayscale(0);
+    }
+}
+
+
+
 // =============================================================================
 // Font Face
 // =============================================================================
@@ -155,6 +172,7 @@
     $image-url : false;
     $retina-url : false;
     $is-gradient : false;
+    $is-dimensions : false;
     $is-background-size : false;
     $is-background-position : false;
     $background-attachment : scroll, fixed, local;
@@ -213,6 +231,10 @@
 
     @if ($is-gradient != false) {
         @include background-image($is-gradient);
+    }
+
+    @if ($is-image != false and $is-dimensions != false) {
+        @include image-dimensions($is-image);
     }
 
     @if ($image-url != false and ($is-retina != false or $is-svg != false)) {
