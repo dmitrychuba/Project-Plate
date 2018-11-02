@@ -113,7 +113,7 @@
 }
 
 .grayscale {
-    transition: all 200ms ease-in-out;
+    transition: all .2s;
     @include grayscale(100%);
     &:hover {
         @include grayscale(0);

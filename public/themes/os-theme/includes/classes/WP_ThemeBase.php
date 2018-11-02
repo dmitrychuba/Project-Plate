@@ -4,7 +4,7 @@ namespace OS;
 
 abstract class WP_ThemeBase {
 
-	public $ver = '1.0.1';
+	public $ver = '1.0.2';
 
 	private $assets_path;
 
@@ -173,10 +173,6 @@ abstract class WP_ThemeBase {
 	 */
 	private function registerMenus() {
 		register_nav_menus( $this->menus );
-		add_filter( 'wp_nav_menu', function( $item ) {
-			return preg_replace( '/<a/', '<a class="menu-item-link"', $item, - 1 );
-		} );
-
 	}
 
 	/**

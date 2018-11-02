@@ -38,9 +38,10 @@ class WP_Theme extends WP_ThemeBase {
 	public function menu( array $params = [] ) {
 
 		$defaults = [
-			'id'    => null,
-			'name'  => null,
-			'class' => null,
+			'id'         => null,
+			'name'       => null,
+			'class'      => null,
+			'item_class' => null,
 		];
 
 		$params = array_merge( $defaults, $params );
@@ -70,6 +71,11 @@ class WP_Theme extends WP_ThemeBase {
 		}
 		if ( ! empty( $params['class'] ) ) {
 			$args['menu_class'] = $params['class'];
+		}
+		if ( ! empty( $params['item_class'] ) ) {
+			add_filter( 'wp_nav_menu', function( $item ) use ( $params ) {
+				return preg_replace( '/<a/', '<a class="' . $params['item_class'] . '"', $item, - 1 );
+			} );
 		}
 
 		wp_nav_menu( $args );
@@ -215,4 +221,3 @@ class WP_Theme extends WP_ThemeBase {
 	}
 
 }
-

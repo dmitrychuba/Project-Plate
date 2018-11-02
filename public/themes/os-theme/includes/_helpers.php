@@ -33,7 +33,7 @@ if ( ! function_exists( 'vd' ) ) {
 if ( ! function_exists( 'the_page_class' ) ) {
 	function the_page_class( $additional_classes = null ) {
 		global $post;
-		$classes = is_front_page() ? 'home' : $post->post_name;
+		$classes = is_front_page() ? 'home' : ( ! empty( $post ) ? $post->post_name : null );
 		if ( is_single() ) {
 			$classes .= ' post';
 		}
@@ -89,7 +89,7 @@ if ( ! function_exists( 'weighted_rand' ) ) {
 	 */
 	function weighted_rand( $data ) {
 		$total_weight = array_sum( array_keys( $data ) );
-		$rand   = rand( 1, $total_weight );
+		$rand         = rand( 1, $total_weight );
 
 		$current_weight = 0;
 		foreach ( $data as $i => $val ) {
@@ -222,7 +222,7 @@ if ( ! function_exists( 'get_link_attrs' ) ) {
 
 if ( ! function_exists( 'get_the_link' ) ) {
 	function get_the_link( $link_array, $attrs = [] ) {
-		if ( ! empty( $attrs['text'] ) ) {
+		if ( ! empty( $attrs['text'] ) || ( isset( $attrs['text'] ) && $attrs['text'] === false ) ) {
 			$link_title = $attrs['text'];
 			unset( $attrs['text'] );
 		} else if ( ! empty( $link_array['title'] ) ) {
@@ -235,7 +235,7 @@ if ( ! function_exists( 'get_the_link' ) ) {
 		}
 
 		$html = '<a' . get_link_attrs( $link_array, $attrs ) . '>';
-		if ( ! empty( $link_title ) ) {
+		if ( ! empty( $link_title ) || ( isset( $link_title ) && $link_title === false ) ) {
 			$html .= $link_title;
 		} else {
 			$html .= $link_array['url'];
@@ -275,6 +275,17 @@ if ( ! function_exists( 'truncate' ) ) {
 		$text = $text . "...";
 
 		return $text;
+	}
+}
+
+if ( ! function_exists( 'attrs_arr_to_str' ) ) {
+	function attrs_arr_to_str( array $attrs_array ) {
+		foreach ( $attrs_array as $attribute => $value ) {
+			$attrs_array[] = $attribute . '="' . $value . '"';
+			unset( $attrs_array[ $attribute ] );
+		}
+
+		return implode( ' ', $attrs_array );
 	}
 }
 
