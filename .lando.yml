@@ -10,3 +10,8 @@ proxy:
 services:
   phpmyadmin:
     type: phpmyadmin
+  database:
+    creds:
+      user: wordpress
+      password: wordpress
+      database: pp

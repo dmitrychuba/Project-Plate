@@ -5,7 +5,7 @@ Requirements:
  * npm
  * lando
  
-##### Note: edit `.lando.yml`, and change "pp"(on line 1 nd 8) with your `[project name]`
+##### Note: edit `.lando.yml`, and change "pp"(on line 1, 8, and 17) with your `[project name]`
 
 ---
 ##### Run all with one command
