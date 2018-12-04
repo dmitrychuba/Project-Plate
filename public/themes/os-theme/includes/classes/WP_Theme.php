@@ -5,21 +5,21 @@ namespace OS;
 /**
  * Class WP_Theme
  *
- * @package PC
+ * @package OS
  */
 class WP_Theme extends WP_ThemeBase {
 
 	/**
 	 * The unique instance of the plugin.
 	 *
-	 * @var PC/WP_Theme
+	 * @var OS/WP_Theme
 	 */
 	private static $instance = null;
 
 	/**
 	 * Gets an instance theme class
 	 *
-	 * @return PC/WP_Theme
+	 * @return static OS/WP_Theme
 	 */
 	public static function getInstance() {
 		if ( null === self::$instance ) {

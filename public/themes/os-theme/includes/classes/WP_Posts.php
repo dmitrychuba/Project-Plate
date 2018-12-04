@@ -8,7 +8,7 @@ use \WeDevs\ORM\Eloquent\Facades\DB;
 /**
  * Class WP_Posts
  *
- * @package PC
+ * @package OS
  */
 class WP_Posts {
 
@@ -22,14 +22,14 @@ class WP_Posts {
 	/**
 	 * The unique instance of the plugin.
 	 *
-	 * @var PC/WP_Posts
+	 * @var OS/WP_Posts
 	 */
 	private static $instance = null;
 
 	/**
 	 * Gets an instance theme class
 	 *
-	 * @return PC/WP_Posts
+	 * @return static OS/WP_Posts
 	 */
 	public static function getInstance() {
 		if ( null === self::$instance ) {
