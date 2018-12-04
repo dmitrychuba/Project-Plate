@@ -141,6 +141,12 @@ if ( ! function_exists( 'get_array' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_item' ) ) {
+	function get_item( array $array, $key ) {
+		return isset( $array[ $key ] ) ? $array[ $key ] : false;
+	}
+}
+
 if ( ! function_exists( 'get_repeater_row' ) ) {
 	function get_repeater_row( $data, $key = null ) {
 		$result = [];
