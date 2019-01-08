@@ -30,6 +30,75 @@ class WP_Theme extends WP_ThemeBase {
 	}
 
 	/**
+	 *
+	 */
+	public function _404() {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		$this->template( '_404' );
+		exit;
+	}
+
+	/**
+	 * @param $dir
+	 * @param $enabled
+	 */
+	public function autoloadClasses( $dir, $enabled = false ) {
+		// Auto-include
+		foreach ( scandir( $dir ) as $class_file ) {
+			$class_name = preg_replace( '~\.php$~', '', $class_file );
+
+			if ( in_array( $class_file, [ '.', '..' ] ) || ( $enabled !== false && ! in_array( $class_name, $enabled ) ) ) {
+				continue;
+			}
+
+			$class_path = $dir . DS . $class_file;
+
+			if ( ! file_exists( $class_path ) ) {
+				continue;
+			}
+			require_once( $class_path );
+		}
+	}
+
+	/**
+	 * @param $plugins_dir
+	 * @param $enabled_plugins
+	 */
+	public function autoloadPlugins( $plugins_dir, $enabled_plugins = false ) {
+		// Auto-include all plugins
+		foreach ( scandir( $plugins_dir ) as $plugin_folder_file_name ) {
+			if (
+				in_array( $plugin_folder_file_name, [ '.', '..' ] ) ||
+				(
+					$enabled_plugins !== false &&
+					! in_array( $plugin_folder_file_name, $enabled_plugins ) &&
+					! in_array( str_ireplace( '.php', '', $plugin_folder_file_name ), $enabled_plugins )
+				)
+			) {
+				continue;
+			}
+
+			$plugin_path = $plugins_dir . DS . $plugin_folder_file_name;
+
+			if ( ! preg_match( '~\.php$~', $plugin_folder_file_name ) ) {
+				$plugin_path .= '.php';
+			}
+
+			if ( ! file_exists( $plugin_path ) ) {
+				$plugin_path = $plugins_dir . DS . $plugin_folder_file_name . DS . "{$plugin_folder_file_name}.php";
+			}
+
+			if ( ! file_exists( $plugin_path ) ) {
+				continue;
+			}
+
+			include_once( $plugin_path );
+		}
+	}
+
+	/**
 	 * Returns WP Menu
 	 *
 	 * @param array $params
@@ -161,11 +230,17 @@ class WP_Theme extends WP_ThemeBase {
 		if ( file_exists( $bd . $template_path ) ) {
 			$template_file = $bd . $template_path;
 
-		} elseif ( file_exists( $bd . $template_path . ".php" ) ) {
-			$template_file = $bd . $template_path . ".php";
+		} elseif ( file_exists( "{$bd}$template_path.blade.php" ) ) {
+			$template_file = "{$bd}$template_path.blade.php";
+
+		} elseif ( file_exists( "{$bd}$template_path.php" ) ) {
+			$template_file = "{$bd}$template_path.php";
 
 		} elseif ( file_exists( $bd . str_replace( '.', $ds, $template_path ) . ".php" ) ) {
 			$template_file = $bd . str_replace( '.', $ds, $template_path ) . ".php";
+
+		} elseif ( file_exists( $bd . str_replace( '.', $ds, $template_path ) . ".blade.php" ) ) {
+			$template_file = $bd . str_replace( '.', $ds, $template_path ) . ".blade.php";
 		}
 
 		if ( $template_file ) {

@@ -2,37 +2,62 @@
 
 namespace OS;
 
-use WP_REST_Server;
-
 class WP_RestEndpoint extends \WP_REST_Controller {
 
-	var $my_namespace = 'os/v';
-
-	var $my_version = '1';
+	private $api_routes;
+	private $ny_namespace;
 
 	/**
 	 * WP_Rest_Endpoint constructor.
+	 *
+	 * @param array  $api_routes
+	 * @param string $namespace
+	 * @param string $version
 	 */
-	public function __construct() {
+	public function __construct( array $api_routes, $namespace, $version ) {
+
+		$this->ny_namespace = "$namespace/v{$version}";
+		$this->api_routes   = $api_routes;
+
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
 	}
 
 	public function register_routes() {
-		$namespace = $this->my_namespace . $this->my_version;
-		register_rest_route( $namespace, '/posts', [
-			[
-				'methods'  => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'getPosts' ],
-			],
-		] );
+		foreach ( $this->api_routes as $api_route => $route_params ) {
+			$api_route    = '/' . ltrim( $api_route, '/' );
+			$route_params = $this->transformParams( $route_params );
+			if ( empty( $route_params ) ) {
+				continue;
+			}
+			register_rest_route( $this->ny_namespace, $api_route, $route_params );
+		}
+
 	}
 
-	public function getPosts() {
-		$result = posts()->getPosts();
+	private function transformParams( array $params ) {
+		if ( empty( $params ) ) return;
+		$transformed = [];
 
-		return $result;
+		foreach ( $params as $methods => $param ) {
+			if ( is_numeric( $methods ) ) {
+				continue;
+			}
+
+			if ( is_array( $param ) && ! empty( $param['callback'] ) ) {
+				$transformed_item = array_merge( [
+					'methods' => $methods,
+				], $param );
+
+			} else {
+				$transformed_item = [
+					'methods'  => $methods,
+					'callback' => $param,
+				];
+			}
+
+			$transformed[] = $transformed_item;
+
+		}
+		return $transformed;
 	}
-
 }
-
-new WP_RestEndpoint();

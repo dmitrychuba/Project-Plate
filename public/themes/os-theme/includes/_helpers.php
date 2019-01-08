@@ -94,7 +94,9 @@ if ( ! function_exists( 'weighted_rand' ) ) {
 		$current_weight = 0;
 		foreach ( $data as $i => $val ) {
 			$current_weight += $i;
-			if ( $current_weight >= $rand ) return $val;
+			if ( $current_weight >= $rand ) {
+				return $val;
+			}
 		}
 
 		return end( $data );
@@ -168,12 +170,16 @@ if ( ! function_exists( 'the_repeater_row' ) ) {
 }
 
 if ( ! function_exists( 'get_image_url' ) ) {
-	function get_image_url( $image_array, $size = 'medium_large' ) {
+	function get_image_url( $image_array_src, $size = 'medium_large' ) {
 		$image_url = null;
-		if ( ! empty( $image_array['sizes'] ) && ! empty( $image_array['sizes'][ $size ] ) ) {
-			$image_url = $image_array['sizes'][ $size ];
-		} else if ( $image_array['url'] ) {
-			$image_url = $image_array['url'];
+		if ( ! empty( $image_array_src['sizes'] ) && ! empty( $image_array_src['sizes'][ $size ] ) ) {
+			$image_url = $image_array_src['sizes'][ $size ];
+		} else if ( ! empty( $image_array_src['url'] ) ) {
+			$image_url = $image_array_src['url'];
+		} else if ( ! empty( $image_array_src['src'] ) ) {
+			$image_url = $image_array_src['src'];
+		} else if ( is_string( $image_array_src ) ) {
+			$image_url = $image_array_src;
 		}
 
 		return $image_url;
@@ -181,12 +187,24 @@ if ( ! function_exists( 'get_image_url' ) ) {
 }
 
 if ( ! function_exists( 'get_image' ) ) {
-	function get_image( $image_id_array, $attrs = [], $size = '' ) {
+	function get_image( $image_id_array_src, $attrs = [], $size = '' ) {
 
-		if ( is_array( $image_id_array ) && ! empty( $image_id_array['ID'] ) ) {
-			$attachment_id = $image_id_array['ID'];
-		} elseif ( is_numeric( $image_id_array ) ) {
-			$attachment_id = $image_id_array;
+		if ( is_array( $image_id_array_src ) && ! empty( $image_id_array_src['ID'] ) ) {
+			$attachment_id = $image_id_array_src['ID'];
+		} elseif ( is_numeric( $image_id_array_src ) ) {
+			$attachment_id = $image_id_array_src;
+		} elseif ( is_string( $image_id_array_src ) ) {
+			$default_attr = [
+				'src'   => $image_id_array_src,
+				'class' => "attachment-full size-full",
+			];
+
+			$attr = wp_parse_args( $attrs, $default_attr );
+
+			return '<img src="' . $attr['src'] . '"' .
+			       ' class="' . $attr['class'] . '"' .
+			       ( ! empty( $attr['alt'] ) ? 'alt="' . $attr['alt'] . '"' : null ) .
+			       ">";
 		} else {
 			return null;
 		}
@@ -227,24 +245,32 @@ if ( ! function_exists( 'get_link_attrs' ) ) {
 }
 
 if ( ! function_exists( 'get_the_link' ) ) {
-	function get_the_link( $link_array, $attrs = [] ) {
+	function get_the_link( $link_array_url, $attrs = [] ) {
 		if ( ! empty( $attrs['text'] ) || ( isset( $attrs['text'] ) && $attrs['text'] === false ) ) {
 			$link_title = $attrs['text'];
 			unset( $attrs['text'] );
-		} else if ( ! empty( $link_array['title'] ) ) {
-			$link_title = $link_array['title'];
-			unset( $link_array['title'] );
+		} else if ( ! empty( $link_array_url['title'] ) ) {
+			$link_title = $link_array_url['title'];
+			unset( $link_array_url['title'] );
+		} else if ( is_string( $link_array_url ) ) {
+			$link_title     = false;
 		}
 
-		if ( empty( $link_array['url'] ) && empty( $link_title ) ) {
+		if ( is_string( $link_array_url ) ) {
+			$link_array_url = [
+				'url' => $link_array_url,
+			];
+		}
+
+		if ( empty( $link_array_url['url'] ) && empty( $link_title ) ) {
 			return null;
 		}
 
-		$html = '<a' . get_link_attrs( $link_array, $attrs ) . '>';
+		$html = '<a' . get_link_attrs( $link_array_url, $attrs ) . '>';
 		if ( ! empty( $link_title ) || ( isset( $link_title ) && $link_title === false ) ) {
 			$html .= $link_title;
 		} else {
-			$html .= $link_array['url'];
+			$html .= $link_array_url['url'];
 		}
 		$html .= '</a>';
 
@@ -253,8 +279,8 @@ if ( ! function_exists( 'get_the_link' ) ) {
 }
 
 if ( ! function_exists( 'the_link' ) ) {
-	function the_link( $link_array, $attrs = [] ) {
-		echo get_the_link( $link_array, $attrs );
+	function the_link( $link_array_url, $attrs = [] ) {
+		echo get_the_link( $link_array_url, $attrs );
 	}
 }
 
@@ -281,6 +307,17 @@ if ( ! function_exists( 'truncate' ) ) {
 		$text = $text . "...";
 
 		return $text;
+	}
+}
+if ( ! function_exists( 'content' ) ) {
+	function content( $more_link_text = null, $strip_teaser = false )
+	{
+		$content = get_the_content( $more_link_text, $strip_teaser );
+
+		$content = apply_filters( 'the_content', $content );
+		$content = str_replace( ']]>', ']]&gt;', $content );
+
+		return $content;
 	}
 }
 
@@ -313,13 +350,19 @@ if ( ! function_exists( 'template' ) ) {
 	}
 }
 
-if ( ! function_exists( 'posts' ) ) {
+if ( ! function_exists( 'social' ) && function_exists( 'OS\wp_social' ) ) {
+	function social() {
+		return OS\wp_social();
+	}
+}
+
+if ( ! function_exists( 'posts' ) && function_exists( 'OS\wp_posts' ) ) {
 	function posts() {
 		return OS\wp_posts();
 	}
 }
 
-if ( ! function_exists( 'theme' ) ) {
+if ( ! function_exists( 'theme' ) && function_exists( 'OS\wp_theme' ) ) {
 	function theme() {
 		return OS\wp_theme();
 	}

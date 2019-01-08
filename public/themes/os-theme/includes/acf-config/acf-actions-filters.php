@@ -33,6 +33,7 @@ add_filter( 'acf/settings/show_admin', function() {
 	return /*$current_user->user_login == 'admin' ||*/
 		$current_user->user_login == 'dmitry' || $current_user->user_login == 'admin';
 } );
+
 //*
 // 4. Save ACF Fields to JSON
 add_filter( 'acf/settings/save_json', function() {
@@ -52,37 +53,37 @@ add_filter( 'acf/settings/load_json', function( $paths ) {
 	return $paths;
 } );
 
-add_action( 'acf/fields/post_object/query', function( $args, $field, $post ) {
-
-	if ( $field['name'] == 'event' ) {
-		$args['meta_key'] = '_wcs_timestamp';
-		$args['orderby']  = 'meta_value_num';
-		$args['order']    = 'DESC';
-	} else {
-		$args['orderby']['date'] = 'DESC';
-	}
-
-	return $args;
-}, 10, 3 );
-
-add_action( 'acf/fields/post_object/result', function( $title, $post, $field, $post_id ) {
-	global $wpdb;
-	if ( $field['name'] == 'event' ) {
-		//$event_start = get_metadata( 'class', $post->ID, '_wcs_timestamp', true );
-
-		$query       = "SELECT meta_value FROM $wpdb->postmeta WHERE post_id = {$post->ID} AND meta_key = '_wcs_timestamp'";
-		$event_start = $wpdb->get_var( $query );
-		$event_start = date( 'M j, Y g:ia', $event_start );
-
-		$edit_event_link = admin_url( 'post.php?post=' . $post->ID . '&action=edit' );
-
-		$title .= " <span class=\"date-badge\">&nbsp;{$event_start}&nbsp;</span>";
-		$title .= " <a class=\"edit-event\" href=\"$edit_event_link\" target=\"_blank\">edit event</a>";
-	}
-
-	return $title;
-}, 10, 4 );
-
+//add_action( 'acf/fields/post_object/query', function( $args, $field, $post ) {
+//
+//	if ( $field['name'] == 'event' ) {
+//		$args['meta_key'] = '_wcs_timestamp';
+//		$args['orderby']  = 'meta_value_num';
+//		$args['order']    = 'DESC';
+//	} else {
+//		$args['orderby']['date'] = 'DESC';
+//	}
+//
+//	return $args;
+//}, 10, 3 );
+//
+//add_action( 'acf/fields/post_object/result', function( $title, $post, $field, $post_id ) {
+//	global $wpdb;
+//	if ( $field['name'] == 'event' ) {
+//		//$event_start = get_metadata( 'class', $post->ID, '_wcs_timestamp', true );
+//
+//		$query       = "SELECT meta_value FROM $wpdb->postmeta WHERE post_id = {$post->ID} AND meta_key = '_wcs_timestamp'";
+//		$event_start = $wpdb->get_var( $query );
+//		$event_start = date( 'M j, Y g:ia', $event_start );
+//
+//		$edit_event_link = admin_url( 'post.php?post=' . $post->ID . '&action=edit' );
+//
+//		$title .= " <span class=\"date-badge\">&nbsp;{$event_start}&nbsp;</span>";
+//		$title .= " <a class=\"edit-event\" href=\"$edit_event_link\" target=\"_blank\">edit event</a>";
+//	}
+//
+//	return $title;
+//}, 10, 4 );
+//
 
 /*
    Debug preview with custom fields
